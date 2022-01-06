@@ -1,0 +1,36 @@
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class Providers{ 
+  final SharedPreferences prefs;
+  final FirebaseFirestore firebaseFirestore;
+  final FirebaseStorage firebaseStorage;
+
+  Providers({ 
+      required this.prefs,
+  required this.firebaseFirestore,
+  required this.firebaseStorage});
+  String? getPref(String key){
+    return prefs.getString(key);
+
+  }
+  Future<bool> setPref(String key, String value)async{
+    return await prefs.setString(key,value);
+
+  }
+  UploadTask uploadFile(File image, String fileName){
+    Reference reference =firebaseStorage.ref().child(fileName);
+    UploadTask uploadTask =reference.putFile(image);
+    return uploadTask;
+
+    }
+    Future<void>updateDataFirestore(String path ,Map<String,dynamic> dataNeedUpdate){
+    return firebaseFirestore.collection("Requests").doc(path).update(dataNeedUpdate);
+    }
+}
+
+
+
+

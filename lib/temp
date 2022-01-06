@@ -1,0 +1,398 @@
+//main.dart
+ child: StreamProvider<MyUser?>.value(
+        value: AuthService().user,
+        initialData: null,
+        child: MaterialApp(
+            theme: ThemeData(
+                appBarTheme: AppBarTheme(
+                  color: Colors.transparent,
+                  elevation: 0,
+                  systemOverlayStyle: (SystemUiOverlayStyle.dark),
+                  iconTheme: IconThemeData(color: Colors.black, size: 20),
+                ),
+                fontFamily: "Nunito"),
+            debugShowCheckedModeBanner: false,
+            home: Wrapper() ),
+      ),
+
+
+
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:share_food/services/auth.dart';
+import 'package:share_food/user_reg.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:flutter_pw_validator/flutter_pw_validator.dart';
+
+class UserLogin extends StatefulWidget {
+  @override
+  _UserLoginState createState() => _UserLoginState();
+}
+
+class _UserLoginState extends State<UserLogin> {
+  final AuthService _auth = AuthService();
+  final TextEditingController controller = new TextEditingController();
+  String email = '';
+  String password = '';
+  String error = '';
+  double windowWidth = 0;
+  double windowHeight = 0;
+  final _formKey = GlobalKey<FormState>();
+
+  bool _isVisible = false;
+  bool _isPasdEight = false;
+  bool _hasPassdOneNum = false;
+  onPasswordChanged(String val) {
+    final numericRegex = RegExp(r'[0-9]');
+    setState(() {
+      _isPasdEight = false;
+      if (val.length >= 8) _isPasdEight = true;
+      _hasPassdOneNum = false;
+      if (numericRegex.hasMatch(val)) _hasPassdOneNum = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    windowHeight = MediaQuery.of(context).size.height;
+    windowWidth = MediaQuery.of(context).size.width;
+    return Scaffold(
+        backgroundColor: Colors.green[200],
+        body: Stack(children: <Widget>[
+          Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Container(
+                        margin: EdgeInsets.only(top: 30),
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text('Login',
+                            style: TextStyle(
+                                height: 3.25,
+                                color: Colors.indigo.shade900,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "Nunito",
+                                fontStyle: FontStyle.italic))),
+                    Container(
+                      height: size.height * .23,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            alignment: Alignment.topCenter,
+                            image: AssetImage('assets/images/icon_usr.png')),
+                      ),
+                    ),
+                  ],
+                ),
+              ]),
+          Container(
+              transform: Matrix4.translationValues(0, 280, 1),
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+              child: Column(children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: Column(
+                    children: <Widget>[
+                      Text('Login to Continue',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Nunito regular',
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(children: <Widget>[
+                            TextFormField(
+                              validator: (email) => email != null &&
+                                      !EmailValidator.validate(email)
+                                  ? 'Enter a valid Email'
+                                  : null,
+                              decoration: InputDecoration(
+                                  prefixIcon: Icon(
+                                    Icons.email,
+                                    color: Colors.black,
+                                  ),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(50),
+                                      borderSide:
+                                          BorderSide(color: Colors.black)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          color: Colors.lightBlue.shade900)),
+                                  hintText: 'Enter Email...',
+                                  hintStyle:
+                                      TextStyle(fontFamily: 'Nuinto regular')),
+                              autofillHints: [AutofillHints.email],
+                              onChanged: (val) {
+                                setState(() => email = val);
+                              },
+                            ),
+                            SizedBox(height: 10),
+                            TextFormField(
+                              validator: (password) {
+                                if (password == null || password.isEmpty)
+                                  return 'Password is required';
+                                String counnt = r'^.{8}';
+                                RegExp regExp = RegExp(counnt);
+                                if (!regExp.hasMatch(password))
+                                  return '''Password must be at least 8 charecters ''';
+                                String pattren = r'^(?=.*?[a-z])(?=.*?[0-9])';
+                                RegExp regExp1 = RegExp(pattren);
+                                if (!regExp1.hasMatch(password))
+                                  return '''Password must be at least contain  one number''';
+                              },
+                              obscureText: !_isVisible,
+                              onChanged: (val) {
+                                onPasswordChanged(val);
+                                setState(() => password = val);
+                              },
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.lock,
+                                  color: Colors.black,
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                    borderSide:
+                                        BorderSide(color: Colors.black)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: Colors.lightBlue.shade900)),
+                                hintText: 'Enter Password...',
+                                hintStyle:
+                                    TextStyle(fontFamily: 'Nuinto regular'),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _isVisible = !_isVisible;
+                                    });
+                                  },
+                                  icon: _isVisible
+                                      ? Icon(
+                                          Icons.visibility,
+                                          color: Colors.black,
+                                        )
+                                      : Icon(
+                                          Icons.visibility_off,
+                                          color: Colors.grey,
+                                        ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => UserReg()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          color: Colors.black,
+                                          fontSize: 17,
+                                          fontFamily: 'Monserrat-Regular'),
+                                    )),
+                                TextButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      'Forgot Password',
+                                      style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          color: Colors.black,
+                                          fontSize: 17,
+                                          fontFamily: 'Monserrat-Regular'),
+                                    ))
+                              ],
+                            )
+                          ]),
+                        ),
+                        //   ],
+                        // ),
+                      ),
+//                       SizedBox(height: 20,),
+//                       Container(
+//         decoration: BoxDecoration(
+//           border: Border.all(
+//                       color: Colors.lightBlue.shade900,
+//                       width: 2,
+
+//           ),
+//           borderRadius: BorderRadius.circular(50)
+//         ),
+//         child: Row(
+//           children:<Widget> [
+
+//             Container(
+//               width: 80,
+//               child: Icon(
+//                 Icons.vpn_key,
+//                 size: 20,
+//               )
+//               ),
+//             Form(
+//               key: _formKey,
+//               child: Expanded(
+//                 child: TextFormField(
+
+//                     validator : (val) =>val!.length<8 && val.isEmpty ? ' Password must be 8 charecters long' :null,
+
+//                                            // (password){
+//                     //   if(password==null|| password.isEmpty) return 'Password is required';
+//                     //     String pattern =r'^(?=.*?[a-z])(?=.*?[0-9]).{8}';
+//                     //     RegExp regExp =RegExp(pattern);
+//                     //     if(!regExp.hasMatch(password))
+//                     //   return  '''Password must be at least 8 charecters and must contain atleast one number''';
+
+//                     // },
+                      // decoration: InputDecoration(
+                      //   border: InputBorder.none,
+                      //   contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      //   hintText: 'Enter Password...',
+                      //   suffixIcon: IconButton(onPressed: (){
+                      //     setState(() {
+                      //       _isVisible = !_isVisible;
+                      //     });
+                      //    },
+                      //   icon: _isVisible? const Icon(Icons.visibility ,color: Colors.black,) :const Icon(Icons.visibility_off,color: Colors.grey,),
+                      //   )
+
+                      // ),
+
+//                     obscureText: !_isVisible,
+//                     onChanged: (val){
+//                       onPasswordChanged(val);
+//                        setState(()=>password= val,
+
+//                        )
+// ;
+
+//                     },
+
+//                     ),
+
+//               ),
+
+//             )
+//           ],
+//         ),
+//       ),
+                    ],
+                  ),
+                ),
+                Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 0,
+                    ),
+                    Text(
+                      error,
+                      style: TextStyle(color: Colors.red, fontSize: 14),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(18),
+                      margin: EdgeInsets.only(top: 70),
+                      child: Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.lightBlue.shade900,
+                            fixedSize: const Size(230, 50),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50)),
+                          ),
+                          child: Text('Login',
+                              style: TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 19,
+                                  color: Colors.limeAccent)),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              dynamic result =
+                                  await _auth.signinWithEmail(email, password);
+                              if (result == null) {
+                                setState(() => error =
+                                    'Could not Login with these credentials');
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // Column(
+                //   children: <Widget>[
+                //     Container(
+                //         padding: EdgeInsets.all(3),
+                //         margin: EdgeInsets.only(top: 0),
+                //         child: Center(
+                //           child: ElevatedButton(
+                //               style: ElevatedButton.styleFrom(
+                //                 primary: Colors.lightBlue.shade900,
+                //                 fixedSize: const Size(230, 50),
+                //                 shape: RoundedRectangleBorder(
+                //                     borderRadius: BorderRadius.circular(50)),
+                //               ),
+                //               child: Text('Sign up',
+                //                   style: TextStyle(
+                //                       fontFamily: 'Nunito',
+                //                       fontWeight: FontWeight.bold,
+                //                       fontSize: 19,
+                //                       color: Colors.limeAccent)),
+                //               onPressed: () {
+                //                 Navigator.push(
+                //                   context,
+                //                   MaterialPageRoute(
+                //                       builder: (context) => ResReg()),
+                //                 );
+                //               }),
+                //         ))
+                //   ],
+                // )
+              ]))
+        ]));
+  }
+}
+//  String validPass( String val){
+
+//    if(val.isEmpty) return 'Password is required';
+//     String pattern =r'^(?=.*?[a-z])(?=.*?[0-9]).{8}';
+//     RegExp regExp =RegExp(pattern);
+//     if(!regExp.hasMatch(val))
+//    return  '''Password must be at least 8 charecters and must contain atleast one number''';
+//    throw(IOException);
+
+//  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

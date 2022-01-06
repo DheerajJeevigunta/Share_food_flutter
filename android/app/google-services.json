@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "951463977457",
+    "firebase_url": "https://food-share-121720-default-rtdb.firebaseio.com",
+    "project_id": "food-share-121720",
+    "storage_bucket": "food-share-121720.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951463977457:android:4562c6795aeb48d20b2450",
+        "android_client_info": {
+          "package_name": "com.example.share_food"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951463977457-l7viabtvai28hiuuejqk6980q16llotj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.share_food",
+            "certificate_hash": "7c5236cf6e08e4a97867511c94d25d0c2a0da98b"
+          }
+        },
+        {
+          "client_id": "951463977457-7lobqtp8n2h9oke4lph0hp0d4o5tneje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4l1-2jyBsPnBlxECMJ-LkZDDa-VIcgjg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951463977457-7lobqtp8n2h9oke4lph0hp0d4o5tneje.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "951463977457-jokuer0bpmdkpthvo7oardibr7t61gko.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.shareFood"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
